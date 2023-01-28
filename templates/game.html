@@ -4,11 +4,10 @@
 
 {% block content %}
     {% block board %}
+        {% block debug %}
         {{ movement }}
-        {{ game.player }}
-        {{ game.board.gameboard[0][0][1].owner }}
-        {{ game.board.gameboard[0][1][1].owner }}
-        {{ game.board.gameboard[7][0][1].owner }}
+        {{ game.selected}}
+        {% endblock %}
         <table id="gameboard">
             {% for y in range(8) %}
             <tr>
@@ -19,24 +18,27 @@
 
                     <!--Pawn movement-->
                     {% if (y,x) in movement%}
-                        <form method="get">
+                        <form method="post">
                         <input type="hidden" name='action' value='move'>
                         <input type="hidden" name='y' value={{ y }}>
                         <input type="hidden" name='x' value={{ x }}>
-                        <input type="submit" value="MOVE">
+                        <input type="submit" value="MOVE" >
                         </form>
                     {% endif %}
                     <!--Pawn action/info-->
                     {% if game.board.gameboard[y][x][1]%}
-                        <form method="post">
-
+                        {% if game.board.gameboard[y][x][1].owner == game.players[0] %}
+                        <form method="post" id="red">
+                        {% else %}
+                            <form method="post" id="blue">
+                        {% endif %}
                         {{game.board.gameboard[y][x][1]}}
 
                         <!--Pawn selection-->
                         <input type="hidden" name='action' value='select'>
                         <input type="hidden" name='y' value={{ y }}>
                         <input type="hidden" name='x' value={{ x }}>
-                        <input type="submit" value="select">
+                        <input type="submit" value="SELECT" >
 
                         </form>
                     {% endif %}
