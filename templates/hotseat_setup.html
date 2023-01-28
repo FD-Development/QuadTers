@@ -1,0 +1,17 @@
+{%  extends "base.html" %}
+
+{% block title %} Hotseat - QuadTers {% endblock %}
+
+{% block content %}
+    <form method="post">
+    <label for="name1">Blue player</label>
+    <input id="name1" name="blue" placeholder="name">
+    <label for="name2">Red Player</label>
+    <input id="name2" name="red" placeholder="name">
+    <input type="submit" value="Begin game">
+    </form>
+
+    <div>
+        <a href="/">Back to menu</a>
+    </div>
+{% endblock %}

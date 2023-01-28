@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        {% block head %}
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="/static/style.css" />
+        {% endblock %}
+    </head>
+    <body>
+        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="footer">
+            {% block footer %}
+            <a>Filip Duber</a>
+            {% endblock %}
+        </div>
+    </body>
+</html>

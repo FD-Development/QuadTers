@@ -1,0 +1,5 @@
+#gameboard tr td{
+    border:black 3px groove;
+    width: 90px;
+    height: 90px;
+}

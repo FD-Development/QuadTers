@@ -1,0 +1,51 @@
+{%  extends "base.html" %}
+
+{% block title %} Game - QuadTers {% endblock %}
+
+{% block content %}
+    {% block board %}
+        {{ movement }}
+        {{ game.player }}
+        {{ game.board.gameboard[0][0][1].owner }}
+        {{ game.board.gameboard[0][1][1].owner }}
+        {{ game.board.gameboard[7][0][1].owner }}
+        <table id="gameboard">
+            {% for y in range(8) %}
+            <tr>
+                {% for x in range(10) %}
+                <td>
+                    <!--Tile movement/info-->
+                    {{game.board.gameboard[y][x][0]}}
+
+                    <!--Pawn movement-->
+                    {% if (y,x) in movement%}
+                        <form method="get">
+                        <input type="hidden" name='action' value='move'>
+                        <input type="hidden" name='y' value={{ y }}>
+                        <input type="hidden" name='x' value={{ x }}>
+                        <input type="submit" value="MOVE">
+                        </form>
+                    {% endif %}
+                    <!--Pawn action/info-->
+                    {% if game.board.gameboard[y][x][1]%}
+                        <form method="post">
+
+                        {{game.board.gameboard[y][x][1]}}
+
+                        <!--Pawn selection-->
+                        <input type="hidden" name='action' value='select'>
+                        <input type="hidden" name='y' value={{ y }}>
+                        <input type="hidden" name='x' value={{ x }}>
+                        <input type="submit" value="select">
+
+                        </form>
+                    {% endif %}
+
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    {% endblock %}
+    {% block UI %} {% endblock %}
+{% endblock %}
