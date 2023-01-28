@@ -20,18 +20,23 @@ class Game:
         self.powerups = dict() #Fill out with selected powerups [name : Object]
         #Setting board
         self.board = Board(self.powerups,self.players)
+        self.selected = tuple()
 
     def select(self, pos):
         #Precautionary measure
         pos[0]=int(pos[0])
         pos[1]=int(pos[1])
+        self.selected=(pos[0],pos[1])
         return self.board.move_check(pos)
-    def move(self, selected, to):
+    def deselect(self):
+        self.selected=None
+    def move(self, pos):
         #Precautionary measure
-        #pos[0]=int(pos[0])
-        #pos[1]=int(pos[1])
-        #return self.board.move_action(pos)
-        pass
+        pos[0]=int(pos[0])
+        pos[1]=int(pos[1])
+        self.board.move_action(self.selected, pos)
+        self.deselect()
+
 class Board:
     def __init__(self, powerups, players):
         '''powerup dictionary, player table'''
@@ -75,12 +80,17 @@ class Board:
                 if self.gameboard[pos[0]][pos[1]][1].owner == self.gameboard[y][x][1].owner or 'jump_proof' in self.gameboard[y][x][1].attributes : move.remove(position)
         #Teleporters --WIP
         return tuple(move)
-    def move_action(self, selected, to):
-        #Check for action on selected tile
-        #Do action
-        #Move Pawn
-        pass
-
+    def move_action(self, sel, to):
+        position_from = self.gameboard[sel[0]][sel[1]]
+        position_to = self.gameboard[to[0]][to[1]]
+        #If a powerup then pick it up
+        if position_to[2] : self.power_pickup(sel,to)
+        #Move Pawn (if an enemy pawn is on position_to it automatically deletes it)
+        position_to[1] = position_from[1]
+        position_from[1] = None
+    def power_pickup(self, pawn, powerup):
+        self.gameboard[pawn[0]][pawn[1]][1].collect_powerup(self.gameboard[powerup[0]][powerup[1]][2])
+        self.gameboard[powerup[0]][powerup[1]][2]=None
 
 class Pawn:
     def __init__(self, player,powerups):
@@ -91,6 +101,10 @@ class Pawn:
 
     def __repr__(self):
         return 'PAWN'
+    def collect_powerup(self, powerup):
+        if powerup in self.collected_powerups :
+            self.collected_powerups.update({powerup : self.collected_powerups.get(powerup)+1})
+        else : self.collected_powerups.update({powerup : 1})
 
 class Tile:
     def __init__(self):
@@ -121,8 +135,10 @@ def game():
     action = request.form.get('action')
     pos=[request.form.get('y'),request.form.get('x')]  #Note. position will always be (y,x)
 
-    if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos),selected=pos)
-    elif action == 'move' : game.move()
+    # game.victory_check()
+    if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos))
+    elif action == 'move' : game.move(pos)
+    elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game)
 
 if __name__ == '__main__':
