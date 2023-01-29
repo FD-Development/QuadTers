@@ -16,11 +16,20 @@ class Game:
         self.players = list()
         self.players.append(Player(red))
         self.players.append(Player(blue))
+        #Setting board + pawns
+        self.board = Board(self.players)
+        self.selected = (0,0)
         #Setting powerups
-        self.powerups = dict() #Fill out with selected powerups [name : Object]
-        #Setting board
-        self.board = Board(self.powerups,self.players)
-        self.selected = tuple()
+        self.powerups = Powerup(self)
+        #Linking powerups with pawns
+        for position_x in range(10):
+            self.board.gameboard[0][position_x][1].set_powerups(self.powerups)
+            self.board.gameboard[1][position_x][1].set_powerups(self.powerups)
+            self.board.gameboard[6][position_x][1].set_powerups(self.powerups)
+            self.board.gameboard[7][position_x][1].set_powerups(self.powerups)
+
+
+
 
     def select(self, pos):
         #Precautionary measure
@@ -38,7 +47,7 @@ class Game:
         self.deselect()
 
 class Board:
-    def __init__(self, powerups, players):
+    def __init__(self, players):
         '''powerup dictionary, player table'''
         #Generates 8 x 10 array. !!Coordinates are (y,x) (rows,columns)!!
         #The information about contents of a tile in the gameboard are located in gameboard[y][x][0/1/2]
@@ -46,10 +55,10 @@ class Board:
         self.gameboard = [[ [Tile(),None,None] for i in range(10) ]for j in range(8)]
         #Populates game board with Pawns
         for position_x in range(10):
-            self.gameboard[0][position_x].insert(1,Pawn(players[0],powerups))
-            self.gameboard[1][position_x].insert(1,Pawn(players[0],powerups))
-            self.gameboard[6][position_x].insert(1,Pawn(players[1],powerups))
-            self.gameboard[7][position_x].insert(1,Pawn(players[1],powerups))
+            self.gameboard[0][position_x].insert(1,Pawn(players[0]))
+            self.gameboard[1][position_x].insert(1,Pawn(players[0]))
+            self.gameboard[6][position_x].insert(1,Pawn(players[1]))
+            self.gameboard[7][position_x].insert(1,Pawn(players[1]))
 
     def move_check(self, pos):
         '''Checks if a Pawn on a given position can move. RETURNS all the positions to where it can move'''
@@ -59,10 +68,10 @@ class Board:
         x = pos[1]
         # DOWN UP RIGHT LEFT
         move = [(y+1, x), (y-1,x), (y, x+1), (y, x-1)]
-        #Move diagonal powerup
-        ##if 'move_diagonal' in self.gameboard[y][x][1].attributte :
+
+        if 'move_diagonal' in self.gameboard[y][x][1].attributes :
         ##    #LOWER-RIGHT LOWER-LEFT UPPER-RIGHT UPPER-LEFT
-        ##    move.extend([(y+1,x+1), (y+1,x-1), (y-1,x+1), (y-1,x-1)])
+            move.extend([(y+1,x+1), (y+1,x-1), (y-1,x+1), (y-1,x-1)])
         move_av = move.copy()
         for position in move_av:
         #Prepping the values
@@ -93,18 +102,23 @@ class Board:
         self.gameboard[powerup[0]][powerup[1]][2]=None
 
 class Pawn:
-    def __init__(self, player,powerups):
+    def __init__(self, player):
         self.owner = player
-        self.powerups = powerups
+        self.powerups = None #object Powerup
         self.collected_powerups = dict()
         self.attributes = set()
 
     def __repr__(self):
         return 'PAWN'
+
+    def set_powerups(self, powerup_object):
+        self.powerups = powerup_object
+
     def collect_powerup(self, powerup):
         if powerup in self.collected_powerups :
             self.collected_powerups.update({powerup : self.collected_powerups.get(powerup)+1})
         else : self.collected_powerups.update({powerup : 1})
+
 
 class Tile:
     def __init__(self):
@@ -115,7 +129,10 @@ class Tile:
         elif self.state == 'destroyed':return 'DESTROYED' #+ self.height
         elif self.state == 'teleport':return 'TELEPORT ([Insert player name])'
         else :return 'ERROR'
-
+    def add_height(self):
+        if self.height < 2 : self.height += 1
+    def remove_height(self):
+        if self.height > -2 : self.height -= 1
 @app.route('/')
 def index():
         return render_template('index.html')

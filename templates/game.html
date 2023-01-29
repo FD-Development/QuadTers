@@ -5,8 +5,9 @@
 {% block content %}
     {% block board %}
         {% block debug %}
-        {{ movement }}
-        {{ game.selected}}
+            {{ movement }}
+            {{ game.selected}}
+            {{ game.board.gameboard[0][1][1].collected_powerups }}
         {% endblock %}
         <table id="gameboard">
             {% for y in range(8) %}

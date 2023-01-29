@@ -1,20 +1,21 @@
-# THIS WILL BE FILLED WITH POWERUP CLASSES
-
-#Abstract class
 class Powerup:
-    def __init__(self, description):
-        #self.board = obiekt klasy board
-        self.description = description
-        #self.owner = który gracz ma danego pionka
-        #self.type = losowo wybierane z [column|row|radius|self]
+    def __init__(self,game):
+        self.game = game
 
-    def power(self):
-        ''' Activates certain power'''
+        self.powerup_dictionary = {
+            'acidic-column': self.acidic('column'),
+            'acidic-row': self. acidic('row'),
+            'acidic-radius': self.acidic('radius'),
+            'raise': self.raise_tile(),
+            'wall-column': self.wall('column'),
+        }
+        self.description_dictionary = {'raise' : 'Raises the tile level by +1.' }
+
+        #type chosen from [column|row|radius]
+
+    def raise_tile(self):
+        self.game.board.gameboard[ self.game.selected[0] ][ self.game.selected[1] ][0].add_height()
+    def acidic(self,type):
         pass
-
-
-
-#class Plifer(Powerup):
-
-
-
+    def wall(self,type):
+        pass
