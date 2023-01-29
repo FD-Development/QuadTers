@@ -42,6 +42,10 @@ class Game:
         pos[1]=int(pos[1])
         self.board.move_action(self.selected, pos)
         self.deselect()
+    def activate_power(self, power):
+        #1. Activates power - function(type) 2.If activation is successful removes power from inventory
+        if self.powerups.powerup_dict[power][0](self.powerups.powerup_dict[power][1]) :
+            self.board.gameboard[self.selected[0]][self.selected[1]][1].remove_powerup(power)
 
 class Board:
     def __init__(self, players):
@@ -116,6 +120,9 @@ class Pawn:
         if powerup in self.collected_powerups :
             self.collected_powerups.update({powerup : self.collected_powerups.get(powerup)+1})
         else : self.collected_powerups.update({powerup : 1})
+    def remove_powerup(self,powerup):
+        if self.collected_powerups[powerup] == 1: self.collected_powerups.pop(powerup)
+        else :self.collected_powerups.update({powerup : self.collected_powerups.get(powerup)-1})
 
 
 class Tile:
@@ -125,7 +132,7 @@ class Tile:
     def __repr__(self):
         if self.state == 'normal':return 'TILE:' + str(self.height)
         elif self.state == 'destroyed':return 'DESTROYED' #+ self.height
-        elif self.state == 'teleport':return 'TELEPORT ([Insert player name])'
+        elif self.state == 'teleport':return 'TELEPORT ([Insert player color])'
         else :return 'ERROR'
     def add_height(self):
         if self.height < 2 : self.height += 1
@@ -152,7 +159,8 @@ def game():
 
     # game.victory_check()
     if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
-    elif action == 'move' : game.move(pos)
+    elif action == 'move' : game.move(pos) #next turn
+    elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
     elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game)
 

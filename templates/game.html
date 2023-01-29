@@ -58,7 +58,8 @@
                     <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
                     <dd>{{ selected.powerups.description_dict[ power ][1] }}</dd>
                 </dl>
-                <form method="get">
+                <form method="post">
+                    <input type="hidden" name="action" value="powerup" >
                     <input type="hidden" name="powerup" value="{{ power }}" >
                     <input type="submit" value="POWERUP" >
                 </form>
@@ -74,7 +75,5 @@
 
 {% block footer %}
     {# DEBUG Info #}
-    {{ movement }}
-    {{ selected }}
-    {{ game.board.gameboard[0][1][1].collected_powerups }}
+    <a> {{ movement }} | {{ game.selected }}</a>
 {% endblock %}
