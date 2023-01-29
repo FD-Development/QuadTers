@@ -1,3 +1,13 @@
+#content{
+    display: flex;
+    flex-direction: column;
+}
+
+#content #ui{
+    display: flex;
+    flex-direction: row;
+}
+
 #gameboard tr td{
     border:black 3px groove;
     width: 90px;
@@ -10,4 +20,11 @@
 
 #blue{
     color:blue;
+}
+
+#side-panel{
+    display: flex;
+    width: auto;
+    height: auto;
+    flex-direction: column;
 }

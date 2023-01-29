@@ -3,7 +3,7 @@ from flask import render_template
 from flask import redirect
 from flask import request
 from flask import session
-from Powerup import *
+from Powerup import Powerup
 from Player import Player
 
 
@@ -28,9 +28,6 @@ class Game:
             self.board.gameboard[6][position_x][1].set_powerups(self.powerups)
             self.board.gameboard[7][position_x][1].set_powerups(self.powerups)
 
-
-
-
     def select(self, pos):
         #Precautionary measure
         pos[0]=int(pos[0])
@@ -48,7 +45,7 @@ class Game:
 
 class Board:
     def __init__(self, players):
-        '''powerup dictionary, player table'''
+        ''' player table'''
         #Generates 8 x 10 array. !!Coordinates are (y,x) (rows,columns)!!
         #The information about contents of a tile in the gameboard are located in gameboard[y][x][0/1/2]
         #Where indexes: 0-Tile obj 1- Pawn obj  2- powerup string (dictionary key)
@@ -113,6 +110,7 @@ class Pawn:
 
     def set_powerups(self, powerup_object):
         self.powerups = powerup_object
+        self.collect_powerup('raise') #Temp for testing
 
     def collect_powerup(self, powerup):
         if powerup in self.collected_powerups :
@@ -153,7 +151,7 @@ def game():
     pos=[request.form.get('y'),request.form.get('x')]  #Note. position will always be (y,x)
 
     # game.victory_check()
-    if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos))
+    if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
     elif action == 'move' : game.move(pos)
     elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game)

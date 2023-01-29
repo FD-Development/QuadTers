@@ -2,14 +2,14 @@ class Powerup:
     def __init__(self,game):
         self.game = game
 
-        self.powerup_dictionary = {
+        self.powerup_dict = {
             'acidic-column': self.acidic('column'),
             'acidic-row': self. acidic('row'),
             'acidic-radius': self.acidic('radius'),
             'raise': self.raise_tile(),
             'wall-column': self.wall('column'),
         }
-        self.description_dictionary = {'raise' : 'Raises the tile level by +1.' }
+        self.description_dict = {'raise' : ['Raise Tile','Raises the tile level by +1.'] }
 
         #type chosen from [column|row|radius]
 
