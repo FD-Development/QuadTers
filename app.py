@@ -85,12 +85,12 @@ class Board:
             if y > 7 or y < 0 or x > 9 or x < 0 : move.remove(position)
         #Tile height difference - Tile height -1 > Pawn tile height AND Pawn has no jetpack
         #-1 enables you to go up
-            elif self.gameboard[y][x][0].height -1 > self.gameboard[pos[0]][pos[1]][0].height and 'jetpack' not in self.gameboard[pos[0]][pos[1]][1].attributes: move.remove(position)
+            elif self.gameboard[y][x][0].height -1 > self.gameboard[pos[0]][pos[1]][0].height and 'climb-tile' not in self.gameboard[pos[0]][pos[1]][1].attributes: move.remove(position)
         #Tile state
             elif self.gameboard[y][x][0].state == 'destroyed' : move.remove(position)
         #If pawn exists on location >> Pawn == friend or (if not friend then enemy) enemy is jump proof
             elif self.gameboard[y][x][1] :
-                if self.gameboard[pos[0]][pos[1]][1].owner == self.gameboard[y][x][1].owner or 'jump_proof' in self.gameboard[y][x][1].attributes : move.remove(position)
+                if self.gameboard[pos[0]][pos[1]][1].owner == self.gameboard[y][x][1].owner or 'jump-proof' in self.gameboard[y][x][1].attributes : move.remove(position)
         #Teleporters --WIP
         return tuple(move)
     def move_action(self, sel, to):

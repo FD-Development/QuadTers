@@ -2,28 +2,40 @@ class Powerup:
     def __init__(self,game):
         self.game = game
 
-        #Dict with executable functions and types of executions chosen from [column|row|radius|self]
+        #Dict with executable functions and types of executions chosen from [column|row|radius|self|_attribute_]
+        #The _attribute_ type should be a string with the name of attribute (same as key)
         self.powerup_dict = {
             'acidic-column':    (self.acidic,'column'),
             'acidic-row':       (self.acidic,'row'),
             'acidic-radial' :   (self.acidic,'radius'),
             'raise':            (self.raise_tile,'self'),
+            'lower':            (self.lower_tile,'self'),
+            'climb-tile':       (self.give_attribute,'climb-tile'),
             #'wall-column':      (self.wall,'column')
         }
         self.description_dict = {'raise' : ('Raise Tile','Raises the tile that the piece using the ability is currently on.'),
+                                 'lower': ('Lower Tile', 'Lowers the tile that the piece using the ability is currently on.'),
                                  'acidic-column' : ('Acidic Column','Destroys any enemy pieces in the same column as your piece. Their tiles become completely uninhabitable.'),
                                  'acidic-row' : ('Acidic Row', 'Destroys any enemy pieces in the same row as your piece. Their tiles become completely uninhabitable.'),
-                                 'acidic-radial' : ('Acidic Radial', 'Destroys any surrounding enemy pieces. Their tiles become completely uninhabitable.')
+                                 'acidic-radial' : ('Acidic Radial', 'Destroys any surrounding enemy pieces. Their tiles become completely uninhabitable.'),
+                                 'climb-tile' : ('Climb Tile', 'The piece is able to move up any tile no matter how high it is.' ),
                                  }
 
         #All powerups are methods that need the specified type. Note that not all functions use the type variable
         #All methods need to return True or False
+    def give_attribute(self,attribute):
+        ''' Giving attributes to pawns that don't have them '''
+        if attribute in self.game.board.gameboard[self.game.selected[0]][self.game.selected[1]][1].attributes :
+            return False
+        else :
+            self.game.board.gameboard[self.game.selected[0]][self.game.selected[1]][1].attributes.add(attribute)
+            return True
     def infliction_method(self,type):
         #Returns all affected tile locations
         #WIP - Check with grow quadradius
         if type == 'row' : return tuple( (self.game.selected[0], x ) for x in range(10) )
         elif type == 'column' : return tuple( ( y ,self.game.selected[1]) for y in range(8) )
-        elif type == 'radius' :
+        elif type == 'radius' : #1.Creates possible affected positions 2.Deletes positions not that existent on the map
             radius = list()
             # [x-1+0][x-1+1][x-1+1] = [x-1][x][x+1]
             radius.extend( list((self.game.selected[0]+1,self.game.selected[1]-1+x) for x in range(3)) )
@@ -39,6 +51,11 @@ class Powerup:
     def raise_tile(self,type):
         if self.game.board.gameboard[ self.game.selected[0] ][ self.game.selected[1] ][0].height < 2 :
             self.game.board.gameboard[ self.game.selected[0] ][ self.game.selected[1] ][0].add_height()
+            return True
+        else : return False
+    def lower_tile(self,type):
+        if self.game.board.gameboard[ self.game.selected[0] ][ self.game.selected[1] ][0].height > -2 :
+            self.game.board.gameboard[ self.game.selected[0] ][ self.game.selected[1] ][0].remove_height()
             return True
         else : return False
     def acidic(self,type):
