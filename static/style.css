@@ -28,3 +28,21 @@
     height: auto;
     flex-direction: column;
 }
+
+#collected_powers ul li {
+    text-decoration: none;
+    margin: 1px ;
+    padding: 1px ;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+#collected_powers dl{
+    flex-shrink: 0;
+}
+
+#collected_powers input{
+    margin: 0px 5px;
+}
