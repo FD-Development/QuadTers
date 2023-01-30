@@ -6,6 +6,7 @@ from flask import session
 from Board_Elements import *
 from Powerup import Powerup
 from Player import Player
+import random
 
 
 
@@ -18,6 +19,10 @@ class Game:
         self.players = list()
         self.players.append(Player(red))
         self.players.append(Player(blue))
+        # Randomizing who is starting
+        if random.randint(0,1) : random.shuffle(self.players)
+        self.turn = self.next_turn()
+        self.current = next(self.turn)
         #Setting board + pawns
         self.board = Board(self.players)
         self.selected = (0,0)
@@ -31,7 +36,6 @@ class Game:
             self.board.gameboard[7][position_x][1].set_powerups(self.powerups)
 
     def select(self, pos):
-        #Precautionary measure
         pos[0]=int(pos[0])
         pos[1]=int(pos[1])
         self.selected=(pos[0],pos[1])
@@ -39,16 +43,27 @@ class Game:
     def deselect(self):
         self.selected=None
     def move(self, pos):
-        #Precautionary measure
         pos[0]=int(pos[0])
         pos[1]=int(pos[1])
         self.board.move_action(self.selected, pos)
         self.deselect()
+        self.current = next(self.turn)
     def activate_power(self, power):
         #1. Activates power - function(type) 2.If activation is successful removes power from inventory
         if self.powerups.powerup_dict[power][0](self.powerups.powerup_dict[power][1]) :
             self.board.gameboard[self.selected[0]][self.selected[1]][1].remove_powerup(power)
 
+    def next_turn(self):
+        #Switches player's turn & generates powerups
+        powergen=0
+        while True :
+            #if this is the last player in the player-list it will start over
+            for player in self.players :
+                powergen += 1
+                if powergen == random.randint(3,7) : self.generate()
+                yield player
+    def generate(self):
+        pass
 class Board:
     def __init__(self, players):
         ''' player table'''
@@ -126,11 +141,11 @@ def game():
     pos=[request.form.get('y'),request.form.get('x')]  #Note. position will always be (y,x)
 
     # game.victory_check()
-    if action == 'select' : return render_template('game.html', game=game, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
+    if action == 'select' : return render_template('game.html', game=game, turn=game.current, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
     elif action == 'move' : game.move(pos) #next turn
     elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
     elif action == 'deselect' : game.deselect()
-    return render_template('game.html', game=game)
+    return render_template('game.html', game=game, turn=game.current)
 
 if __name__ == '__main__':
     app.run(host="wierzba.wzks.uj.edu.pl", port=5105, debug=True)

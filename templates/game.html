@@ -27,19 +27,22 @@
                 {# Pawn info/color #}
                 {% if game.board.gameboard[y][x][1] %}
                     {% if game.board.gameboard[y][x][1] == selected %}
-                        <form method="post" style="color:green" >
+                        <a style="color:green" >{{ game.board.gameboard[y][x][1] }}</a>
                     {% elif game.board.gameboard[y][x][1].owner == game.players[0] %}
-                        <form method="post" id="red">
+                        <a style="color:red" >{{ game.board.gameboard[y][x][1] }}</a>
                     {% else %}
-                        <form method="post" id="blue">
+                        <a style="color:blue">{{game.board.gameboard[y][x][1]}}</a>
                     {% endif %}
-                            {{game.board.gameboard[y][x][1]}}
-                            {# <!--Pawn selection #}
+                    {# Pawn selection #}
+                    {% if game.board.gameboard[y][x][1].owner == turn %}
+                        <form method="post">
                             <input type="hidden" name='action' value='select'>
                             <input type="hidden" name='y' value={{ y }}>
                             <input type="hidden" name='x' value={{ x }}>
                             <input type="submit" value="SELECT" >
                         </form>
+                    {% endif %}
+
                 {% endif %}
 
             </td>
@@ -54,15 +57,17 @@
         {% if selected %}
             <ul>
             {% for power in selected.collected_powerups %}
-                <dl>
-                    <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
-                    <dd>{{ selected.powerups.description_dict[ power ][1] }}</dd>
-                </dl>
-                <form method="post">
-                    <input type="hidden" name="action" value="powerup" >
-                    <input type="hidden" name="powerup" value="{{ power }}" >
-                    <input type="submit" value="POWERUP" >
-                </form>
+                <li>
+                    <dl>
+                        <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
+                        <dd>{{ selected.powerups.description_dict[ power ][1] }}</dd>
+                    </dl>
+                    <form method="post">
+                        <input type="hidden" name="action" value="powerup" >
+                        <input type="hidden" name="powerup" value="{{ power }}" >
+                        <input type="submit" value="POWERUP" >
+                    </form>
+                </li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -75,5 +80,5 @@
 
 {% block footer %}
     {# DEBUG Info #}
-    <a> {{ movement }} | {{ game.selected }}</a>
+    <a> {{ movement }} | {{ game.selected }} | {{ turn.name }}</a>
 {% endblock %}
