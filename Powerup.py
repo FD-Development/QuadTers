@@ -1,3 +1,4 @@
+import random
 class Powerup:
     def __init__(self,game):
         self.game = game
@@ -21,6 +22,7 @@ class Powerup:
             'trench-column':    (self.bottom_height, 'column'),
             'trench-row':       (self.bottom_height, 'row'),
             'moat':             (self.bottom_height, 'radius'),
+            'relocate' :        (self.relocate, 'self'),
         }
         self.description_dict = {'raise' : ('Raise Tile','Raises the tile that the piece using the ability is currently on.'),
                                  'lower': ('Lower Tile', 'Lowers the tile that the piece using the ability is currently on.'),
@@ -140,4 +142,20 @@ class Powerup:
                 target_loc[0].height = -2
 
         return affected
+
+    def relocate(self,type):
+        #This a special powerup it will always return FALSE beacuse it itself removes the powerup
+        selected_loc = self.game.board.gameboard[self.game.selected[0]][self.game.selected[1]]
+        limit = 400
+        while limit :
+            target_loc = self.game.board.gameboard[random.randint(0,7)][random.randint(0,9)]
+            limit -= 1
+            # won't relocate if the tile is destroyed there is a pawn or powerup on tile
+            if target_loc[0].state != 'destroyed' and not target_loc[1] and not target_loc[2] :
+                selected_loc[1].remove_powerup('relocate')
+                target_loc[1] = selected_loc[1]
+                selected_loc[1] = None
+                return False
+        return False
+
 
