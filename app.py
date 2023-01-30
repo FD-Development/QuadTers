@@ -19,10 +19,6 @@ class Game:
         self.players = list()
         self.players.append(Player(red))
         self.players.append(Player(blue))
-        # Randomizing who is starting
-        if random.randint(0,1) : random.shuffle(self.players)
-        self.turn = self.next_turn()
-        self.current = next(self.turn)
         #Setting board + pawns
         self.board = Board(self.players)
         self.selected = (0,0)
@@ -34,6 +30,10 @@ class Game:
             self.board.gameboard[1][position_x][1].set_powerups(self.powerups)
             self.board.gameboard[6][position_x][1].set_powerups(self.powerups)
             self.board.gameboard[7][position_x][1].set_powerups(self.powerups)
+        # Randomizing who is starting
+        if random.randint(0,1) : random.shuffle(self.players)
+        self.turn = self.next_turn()
+        self.current = next(self.turn)
 
     def select(self, pos):
         pos[0]=int(pos[0])
@@ -55,15 +55,25 @@ class Game:
 
     def next_turn(self):
         #Switches player's turn & generates powerups
-        powergen=0
+        powergen=0 #Note that due to self.current in init, this will always be powergen+1 at start
+        turn = lambda : random.randint(3, 6)
+        generation_turn = turn()
         while True :
             #if this is the last player in the player-list it will start over
             for player in self.players :
                 powergen += 1
-                if powergen == random.randint(3,7) : self.generate()
+                if powergen == generation_turn:
+                    powergen = 0
+                    generation_turn = turn()
+                    self.generate()
                 yield player
     def generate(self):
-        pass
+        #Generates powerups on the board
+        #Generate random amount of powerups (1-4)
+        for x in range(1,random.randint(1,4)) :
+          self.board.power_place( random.choice(list(self.powerups.powerup_dict.keys())) )
+
+
 class Board:
     def __init__(self, players):
         ''' player table'''
@@ -119,6 +129,15 @@ class Board:
     def power_pickup(self, pawn, powerup):
         self.gameboard[pawn[0]][pawn[1]][1].collect_powerup(self.gameboard[powerup[0]][powerup[1]][2])
         self.gameboard[powerup[0]][powerup[1]][2]=None
+    def power_place(self,powerup):
+        limit = 100 #This is not an elegant solution, will fix later.
+        while limit:
+            loc=self.gameboard[random.randint(0,7)][random.randint(0,9)]
+            limit -= 1
+            # won't place powerup if the tile is destroyed there is a pawn or powerup on tile
+            if loc[0].state != 'destroyed' and not loc[1] and not loc[2]:
+                loc[2] = powerup
+                break
 
 
 @app.route('/')

@@ -24,6 +24,11 @@
                     </form>
                 {% endif %}
 
+                {# Powerup info #}
+                {% if game.board.gameboard[y][x][2] %}
+                    <a style="color:orange" >POWERUP</a>
+                {% endif %}
+
                 {# Pawn info/color #}
                 {% if game.board.gameboard[y][x][1] %}
                     {% if game.board.gameboard[y][x][1] == selected %}
