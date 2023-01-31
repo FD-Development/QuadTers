@@ -15,7 +15,10 @@ app = Flask(__name__)
 app.secret_key = '1221'
 
 games = {}
-
+def check():
+    if 'key' not in session or 'games' not in globals():
+        return True
+    return False
 class Game:
     def __init__(self, blue, red):
         #Setting players
@@ -24,7 +27,7 @@ class Game:
         self.players.append(Player(blue))
         #Setting board + pawns
         self.board = Board(self.players)
-        self.selected = (0,0)
+        self.selected = None
         #Setting powerups
         self.powerups = Powerup(self)
         #Linking powerups with pawns
@@ -39,15 +42,11 @@ class Game:
         self.current = next(self.turn)
 
     def select(self, pos):
-        pos[0]=int(pos[0])
-        pos[1]=int(pos[1])
         self.selected=(pos[0],pos[1])
         return self.board.move_check(pos)
     def deselect(self):
         self.selected=None
     def move(self, pos):
-        pos[0]=int(pos[0])
-        pos[1]=int(pos[1])
         self.board.move_action(self.selected, pos)
         self.deselect()
         self.current = next(self.turn)
@@ -151,6 +150,7 @@ def index():
 
 @app.route('/hotseat',  methods=['POST','GET'])
 def hotseat_setup():
+    if check() : return redirect('/')
     if request.method == 'POST':
         games[session['key']] = Game(request.form.get('blue'), request.form.get('red'))
         return redirect('/game')
@@ -159,15 +159,21 @@ def hotseat_setup():
 
 @app.route('/game', methods=['GET','POST'])
 def game():
+    if check() or session['key'] not in games  : return redirect('/')
     #Conversion to shorter variable names
     game = games[session['key']]
     action = request.form.get('action')
-    pos=[request.form.get('y'),request.form.get('x')]  #Note. position will always be (y,x)
-    # game.victory_check()
-    if action == 'select' : return render_template('game.html', game=game, turn=game.current, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
-    elif action == 'move' : game.move(pos) #next turn
-    elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
-    elif action == 'deselect' : game.deselect()
+    pos=[request.form.get('y', type=int ),request.form.get('x', type=int)]  #Note. position will always be (y,x)
+
+    # game.victory_check() : redirect('/game/winner')
+    if action == 'select' :
+        #Prevents form going to previous page and selecting piece
+        if pos and game.board.gameboard[pos[0]][pos[1]][1].owner == game.current:
+            return render_template('game.html', game=game, turn=game.current, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
+    if game.selected: #if pawn is selected it allows for other actions
+        if action == 'move' : game.move(pos) #next turn | deselects pawn
+        elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
+        elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game, turn=game.current)
 
 if __name__ == '__main__':
