@@ -7,11 +7,14 @@ from Board_Elements import *
 from Powerup import Powerup
 from Player import Player
 import random
-
+import uuid
 
 
 
 app = Flask(__name__)
+app.secret_key = '1221'
+
+games = {}
 
 class Game:
     def __init__(self, blue, red):
@@ -142,13 +145,14 @@ class Board:
 
 @app.route('/')
 def index():
-        return render_template('index.html')
+    if 'key' not in session:
+        session['key'] = uuid.uuid4()
+    return render_template('index.html')
 
 @app.route('/hotseat',  methods=['POST','GET'])
 def hotseat_setup():
     if request.method == 'POST':
-        global game
-        game = Game(request.form.get('blue'), request.form.get('red'))
+        games[session['key']] = Game(request.form.get('blue'), request.form.get('red'))
         return redirect('/game')
     else:
         return render_template('hotseat_setup.html')
@@ -156,9 +160,9 @@ def hotseat_setup():
 @app.route('/game', methods=['GET','POST'])
 def game():
     #Conversion to shorter variable names
+    game = games[session['key']]
     action = request.form.get('action')
     pos=[request.form.get('y'),request.form.get('x')]  #Note. position will always be (y,x)
-
     # game.victory_check()
     if action == 'select' : return render_template('game.html', game=game, turn=game.current, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
     elif action == 'move' : game.move(pos) #next turn
