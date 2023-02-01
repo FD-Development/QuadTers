@@ -1,4 +1,5 @@
 from Board_Elements import *
+import random
 class Board:
     def __init__(self, players):
         ''' player table'''
@@ -22,7 +23,7 @@ class Board:
         # DOWN UP RIGHT LEFT
         move = [(y+1, x), (y-1,x), (y, x+1), (y, x-1)]
 
-        if 'move_diagonal' in self.gameboard[y][x][1].attributes :
+        if 'move-diagonal' in self.gameboard[y][x][1].attributes :
         ##    #LOWER-RIGHT LOWER-LEFT UPPER-RIGHT UPPER-LEFT
             move.extend([(y+1,x+1), (y+1,x-1), (y-1,x+1), (y-1,x-1)])
         move_av = move.copy()

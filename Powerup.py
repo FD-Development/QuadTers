@@ -17,12 +17,16 @@ class Powerup:
             'plifer-row':       (self.plifer,'row'),
             'plifer-radial':    (self.plifer,'radius'),
             'wall-column':      (self.top_height,'column'),
-            'wall-row':         (self.top_height, 'column'),
+            'wall-row':         (self.top_height, 'row'),
             'plateau':          (self.top_height, 'radius'),
             'trench-column':    (self.bottom_height, 'column'),
             'trench-row':       (self.bottom_height, 'row'),
             'moat':             (self.bottom_height, 'radius'),
+            'kamikaze-column':  (self.kamikaze,'column'),
+            'kamikaze-row':     (self.kamikaze, 'row'),
+            'kamikaze-radial':  (self.kamikaze, 'radius'),
             'relocate' :        (self.relocate, 'self'),
+            'move-diagonal' :   (self.give_attribute, 'move-diagonal')
         }
         self.description_dict = {'raise' : ('Raise Tile','Raises the tile that the piece using the ability is currently on.'),
                                  'lower': ('Lower Tile', 'Lowers the tile that the piece using the ability is currently on.'),
@@ -38,9 +42,13 @@ class Powerup:
                                  'trench-column': ('Trench Column', 'Lowers every tile in the same column as your piece.'),
                                  'trench-row': ('Trench Row', 'Lowers every tile in the same row as your piece.'),
                                  'moat': ('Moat', 'Lowers every tile next to your piece. Creates a moat'),
+                                 'kamikaze-column' : ('Kamikaze Column','Destroys all pieces in the same column as your piece, including the piece activating the ability, and any of your pieces within range.'),
+                                 'kamikaze-row': ('Kamikaze Row','Destroys all pieces in the same row as your piece, including the piece activating the ability, and any of your pieces within range.'),
+                                 'kamikaze-radial': ('Kamikaze Radial','Destroys all pieces in the same radial as your piece, including the piece activating the ability, and any of your pieces within range.'),
                                  'climb-tile' : ('Climb Tile', 'The piece is able to move up any tile no matter how high it is.' ),
                                  'jump-proof' : ('Jump Proof', 'This piece can no longer be defeated by being jump on by an enemy piece.'),
                                  'relocate' : ('Relocate', 'Teleports this piece to a random unoccupied location on the board.'),
+                                 'move-diagonal' : ('Move Diagonal', 'This piece can permanently move diagonally.')
                                  }
 
         #All powerups are methods that need the specified type. Note that not all functions use the type variable
@@ -105,7 +113,7 @@ class Powerup:
                 # Steal every powerup | This can be optimised
                 for steal in target_loc[1].collected_powerups.keys():
                     selected_loc[1].collect_powerup(steal) #Give powerup to selected
-                    target_loc[1].remove_powerup(steal) #Remove powerup form enemy
+                target_loc[1].collected_powerups={}
         return hit
     def top_height(self,type):
         area = self.infliction_method(type)
@@ -158,4 +166,25 @@ class Powerup:
                 return False
         return False
 
+    def kamikaze(self,type):
+        area = self.infliction_method(type)
+        selected_loc = self.game.board.gameboard[self.game.selected[0]][self.game.selected[1]]
+        hit = False
+        for pos in area :
+            target_loc = self.game.board.gameboard[pos[0]][pos[1]]
+            # Check for enemies
+            if target_loc[1] and target_loc[1].owner != selected_loc[1].owner :
+                hit = True
+                break
+
+        if hit :
+            for pos in area:
+                target_loc = self.game.board.gameboard[pos[0]][pos[1]]
+                # Destroys all pawns including the one activating the powerup
+                if target_loc[1] :
+                    target_loc[1] = None
+
+            selected_loc[1] = None
+            return False
+        return False
 
