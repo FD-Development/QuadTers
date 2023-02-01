@@ -7,11 +7,46 @@
     display: flex;
     flex-direction: row;
 }
+#gameboard{
+    display: flex;
+    flex-shrink: 5;
+}
+#gameboard tr{
+    display: flex;
+
+}
 
 #gameboard tr td{
     border:black 3px groove;
     width: 90px;
     height: 90px;
+}
+#gameboard tr td a{
+    display: none;
+}
+
+#gameboard form{
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+#player0 .pawn{
+    background-color: red;
+}
+#player1 .pawn{
+    background-color: blue;
+}
+.pawn{
+    border-width: 18px;
+  border-radius: 45px;
+  padding: 6px;
+  border-style: outset;
+  width: 60px;
+  height: 60px;
+}
+
+.has_powerup input{
+    outline:3px dotted black
 }
 
 #red{
@@ -40,7 +75,17 @@
 }
 
 #collected_powers dl{
-    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#collected_powers dl div{
+    display: flex;
+    flex-direction: row;
+}
+
+#collected_powers dl dt{
+    width: 150px;
 }
 
 #collected_powers input{

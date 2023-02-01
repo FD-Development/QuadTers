@@ -1,6 +1,6 @@
 {%  extends "base.html" %}
 
-{% block title %} Game - QuadTers {% endblock %}
+{% block title %} Match - QuadTers {% endblock %}
 
 {% block content %}
     <div id="ui">
@@ -31,22 +31,33 @@
 
                 {# Pawn info/color #}
                 {% if game.board.gameboard[y][x][1] %}
-                    {% if game.board.gameboard[y][x][1] == selected %}
-                        <a style="color:green" >{{ game.board.gameboard[y][x][1] }}</a>
-                    {% elif game.board.gameboard[y][x][1].owner == game.players[0] %}
-                        <a style="color:red" >{{ game.board.gameboard[y][x][1] }}</a>
+
+                    {# Player distinction #}
+                    {% if game.board.gameboard[y][x][1].owner == game.players[0] %}
+                        <form id="player0"
                     {% else %}
-                        <a style="color:blue">{{game.board.gameboard[y][x][1]}}</a>
+                        <form id="player1"
                     {% endif %}
+                    {% if game.board.gameboard[y][x][1].collected_powerups  %}
+                        class="has_powerup"
+                    {% endif %}
+                            method="post">
+
                     {# Pawn selection #}
-                    {% if game.board.gameboard[y][x][1].owner == turn %}
-                        <form method="post">
-                            <input type="hidden" name='action' value='select'>
                             <input type="hidden" name='y' value={{ y }}>
                             <input type="hidden" name='x' value={{ x }}>
-                            <input type="submit" value="SELECT" >
-                        </form>
-                    {% endif %}
+
+                        {% if game.board.gameboard[y][x][1] == selected %}
+                            <input type="hidden" name='action' value='deselect'>
+                            <input class="pawn" style="background-color:green" type="submit" value="DE">
+                        {% elif game.board.gameboard[y][x][1].owner == turn %}
+                            <input type="hidden" name='action' value='select'>
+                            <input class="pawn"  type="submit" value="SEL" >
+                        {% else %}
+                            <input class="pawn" type="button">
+                        {% endif %}
+                    </form>
+
 
                 {% endif %}
 
@@ -64,14 +75,17 @@
             {% for power in selected.collected_powerups %}
                 <li>
                     <dl>
-                        <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
+                        <div>
+                            <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
+                            <form method="post">
+                                <input type="hidden" name="action" value="powerup" >
+                                <input type="hidden" name="powerup" value="{{ power }}" >
+                                <input type="submit" value="ACTIVATE" >
+                            </form>
+                        </div>
                         <dd>{{ selected.powerups.description_dict[ power ][1] }}</dd>
                     </dl>
-                    <form method="post">
-                        <input type="hidden" name="action" value="powerup" >
-                        <input type="hidden" name="powerup" value="{{ power }}" >
-                        <input type="submit" value="POWERUP" >
-                    </form>
+
                 </li>
             {% endfor %}
             </ul>
