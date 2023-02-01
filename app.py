@@ -41,7 +41,7 @@ def game():
     action = request.form.get('action')
     pos=[request.form.get('y', type=int ),request.form.get('x', type=int)]  #Note. position will always be (y,x)
 
-    # game.victory_check() : redirect('/game/winner')
+    if game.victory_check() : return redirect('/winner')
     if action == 'select' :
         #Prevents form going to previous page and selecting piece
         if pos and game.board.gameboard[pos[0]][pos[1]][1].owner == game.current:
@@ -51,6 +51,11 @@ def game():
         elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
         elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game, turn=game.current)
+
+@app.route('/winner')
+def winner():
+    if check(): return redirect('/')
+    return render_template('winner.html', victor=games[session['key']].current.name)
 
 if __name__ == '__main__':
     app.run(host="wierzba.wzks.uj.edu.pl", port=5105, debug=True)

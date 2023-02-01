@@ -57,3 +57,26 @@ class Game:
         #Generate random amount of powerups (1-4)
         for x in range(1,random.randint(1,4)) :
           self.board.power_place( random.choice(list(self.powerups.powerup_dict.keys())) )
+
+    def victory_check(self):
+        #Checks for existent pawns of each player. If there's one left = current (victor). If no one then it's a draw.
+        alive_players = []
+        for player in self.players:
+            if self.victory_condition(player) : alive_players.append(player)
+
+        if   len(alive_players) > 1 :
+            return False
+        elif len(alive_players) == 1 :
+            self.current = alive_players[0]
+            return True
+        else :
+            self.current = None
+            return True
+
+    def victory_condition(self, player):
+        for y in range(8):
+            for x in range(10):
+                #If at least one pawn of this player is found
+                if self.board.gameboard[y][x][1] and self.board.gameboard[y][x][1].owner == player:
+                    return True
+        return False
