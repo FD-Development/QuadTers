@@ -20,6 +20,10 @@
     border:black 3px groove;
     width: 90px;
     height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+
 }
 #gameboard tr td a{
     display: none;
@@ -43,12 +47,23 @@
   border-style: outset;
   width: 60px;
   height: 60px;
+  padding: 3px;
 }
 
 .has_powerup input{
     outline:3px dotted black
 }
 
+.powerup{
+  border-width: 6px;
+  background-color: orangered;
+  border-radius: 30px;
+  border-style: ridge;
+  width: 25px;
+  height: 25px;
+  border-color: white;
+  margin: 7px;
+}
 #red{
     color: red;
 }
