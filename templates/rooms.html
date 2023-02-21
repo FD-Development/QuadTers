@@ -12,12 +12,16 @@
         <div><p>There are no rooms.</p></div>
     {% else %}
         {% for room in rooms %}
-            <li>
-                <a> {{ room }} </a>
-                <a href="/join/{{ room }}"> JOIN </a>
+            {% if rooms[room] is iterable and (rooms[room] is not string and rooms[room] is not mapping) %}
+                <li>
 
-            </li>
+                    <a> {{ rooms[room][0] }}'s Game</a>
+                    <a href="/join/{{ room }}"> JOIN </a>
+
+                </li>
+            {% endif %}
         {% endfor %}
     {% endif %}
+
 </ul>
 {% endblock %}
