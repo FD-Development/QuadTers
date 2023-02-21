@@ -1,0 +1,15 @@
+{%  extends "base.html" %}
+
+{% block title %} Online room setup - QuadTers {% endblock %}
+
+{% block content %}
+    <form method="post">
+        <label for="name1">Player</label>
+        <input id="name1" name="player" placeholder="name" value="">
+        <input type="submit" value="Create new room">
+    </form>
+
+    <div>
+        <a href="/">Back to menu</a>
+    </div>
+{% endblock %}

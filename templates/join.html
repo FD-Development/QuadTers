@@ -1,0 +1,16 @@
+{%  extends "base.html" %}
+
+{% block title %} Join room - QuadTers {% endblock %}
+
+{% block content %}
+    <form method="post">
+        <label for="name1">Player</label>
+        <input id="name1" name="player" placeholder="name" value="">
+        <input type="hidden" name="uuid"  value="{{ game_uuid }}">
+        <input type="submit" value="Join room">
+    </form>
+
+    <div>
+        <a href="/">Back to menu</a>
+    </div>
+{% endblock %}

@@ -1,10 +1,12 @@
 {%  extends "base.html" %}
 
 {% block title %} Match - QuadTers {% endblock %}
-
 {% block content %}
+    <meta http-equiv="refresh" content="5;URL=/match" />
     <div id="ui">
-    {# Board #}
+
+        {# Board #}
+
     <table id="gameboard">
         {% for y in range(8) %}
         <tr>
@@ -99,8 +101,6 @@
     {# DEBUG Info #}
     <a> {{ movement }} | {{ game.selected }} | {{ turn.name }}</a>
 {% endblock %}
-<script>
-    setTimeout(function(){
-   window.location.reload(1);
-}, 2000);
-</script>
+
+
+
