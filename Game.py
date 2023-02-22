@@ -37,7 +37,8 @@ class Game:
         #1. Activates power - function(type) 2.If activation is successful removes power from inventory
         if self.powerups.powerup_dict[power][0](self.powerups.powerup_dict[power][1]) :
             self.board.gameboard[self.selected[0]][self.selected[1]][1].remove_powerup(power)
-
+    def skip(self):
+        self.current = next(self.turn)
     def next_turn(self):
         #Switches player's turn & generates powerups
         powergen=0 #Note that due to self.current in init, this will always be powergen+1 at start

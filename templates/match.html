@@ -116,6 +116,14 @@
 
 {% block footer %}
     {# DEBUG Info #}
-    <p><a> {{ movement }} | {{ game.selected }}</a></p>
+    <p style="display: inline">
+        <a> {{ movement }} | {{ game.selected }} |</a></p>
+
+        <form method="post" style=" display: inline; padding: 10px 10px 10px 10px ">
+            <input type="hidden" name="action" value="skip" >
+            <input type="submit" style="background-color:rebeccapurple; color:red;" value="SKIP TURN">
+        </form>
+
+
     <p><a>Recreated by Filip Duber</a></p>
 {% endblock %}

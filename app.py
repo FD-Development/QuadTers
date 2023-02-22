@@ -135,6 +135,9 @@ def match():
             #Prevents form going to previous page and selecting piece
             if pos and match.board.gameboard[pos[0]][pos[1]][1].owner == match.current:
                 return render_template('match.html', game=match, turn=match.current, movement=match.select(pos), selected=match.board.gameboard[pos[0]][pos[1]][1])
+        if action == 'skip':
+            match.skip()
+            return redirect('/match')
         if match.selected: #if pawn is selected it allows for other actions
             if action == 'move' :
                 match.move(pos)
