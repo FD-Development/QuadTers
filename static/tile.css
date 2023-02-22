@@ -4,6 +4,9 @@
     border-bottom:5px  darkgray outset;
     border-left:5px gray outset;
     border-right:5px darkgray outset;
+    position: relative;
+    left:-10px;
+    top: -10px;
 }
 
 .pos{
@@ -12,6 +15,9 @@
     border-bottom:5px  darkgray outset;
     border-left:5px gray outset;
     border-right:5px darkgray outset;
+    position: relative;
+    left:-5px;
+    top: -5px;
 }
 
 .normal{
@@ -25,6 +31,9 @@
     border-bottom: 5px gray inset;
     border-left: 5px gray inset;
     border-right: 5px darkgray inset;
+    position: relative;
+    left: 5px;
+    top: 5px;
 
 }
 
@@ -34,6 +43,9 @@
     border-bottom: 5px gray inset;
     border-left: 5px gray inset;
     border-right: 5px darkgray inset;
+    position: relative;
+    left: 10px;
+    top: 10px;
 }
 
 .destroyed{
