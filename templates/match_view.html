@@ -4,7 +4,7 @@
 
 {% block header %}
     <h1>{{ turn.name }} Turn!</h1>
-    <meta http-equiv="refresh" content="60" />
+    <meta http-equiv="refresh" content="10" />
 {% endblock %}
 
 {% block content %}
@@ -36,15 +36,6 @@
 				{% if game.board.gameboard[y][x][2] %}
                     <div class="powerup" style="color:orange" ></div>
                 {% endif %}
-                {# Tile - available movement #}
-                {% if (y,x) in movement%}
-                    <form method="post">
-                    <input type="hidden" name='action' value='move'>
-                    <input type="hidden" name='y' value={{ y }}>
-                    <input type="hidden" name='x' value={{ x }}>
-                    <input class="movement" type="submit" value="➥" >
-                    </form>
-                {% endif %}
 
 
                 {# Pawn info/color #}
@@ -59,25 +50,19 @@
                     {% if game.board.gameboard[y][x][1].collected_powerups  %}
                         class="has_powerup"
                     {% endif %}
-                            method="post">
+                            method="get">
 
-                    {# Pawn selection #}
-                            <input type="hidden" name='y' value={{ y }}>
-                            <input type="hidden" name='x' value={{ x }}>
 
                         {% if game.board.gameboard[y][x][1] == selected %}
                             <input type="hidden" name='action' value='deselect'>
                             <input class="pawn" style="animation:idle 2s infinite" type="submit" value="">
-                        {% elif game.board.gameboard[y][x][1].owner == turn %}
-                            <input type="hidden" name='action' value='select'>
-                            <input class="pawn"style="cursor:grab;"  type="submit" value="" >
                         {% else %}
                             <input class="pawn" type="button">
                         {% endif %}
                     </form>
 
                 {% endif %}
-				
+
             </td>
             {% endfor %}
         </tr>
@@ -85,33 +70,9 @@
     </table>
 
     {# Powerup #}
-    <div id="side-panel" >
-        <div id="powers">
-        {% if selected %}
-            <ul>
-            {% for power in selected.collected_powerups %}
-                <li id="collected_powers">
-                    <dl>
-                        <div>
-                            <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
-                            <form method="post">
-                                <input type="hidden" name="action" value="powerup" >
-                                <input type="hidden" name="powerup" value="{{ power }}" >
-                                <input type="submit" value="ACTIVATE" >
-                            </form>
-                        </div>
-                        <dd class="desc" ><a>{{ selected.powerups.description_dict[ power ][1] }}</a></dd>
-                    </dl>
-
-                </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-        </div>
         <!--<div id="all_powers"><div>-->
     </div>
 
-    </div>
 {% endblock %}
 
 {% block footer %}

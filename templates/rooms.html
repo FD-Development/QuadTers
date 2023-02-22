@@ -7,7 +7,7 @@
     <dev>
         <a href="/online_setup" > Create new room </a>
     </dev>
-<ul>
+<ul style="list-style: disclosure-closed;">
     {% if rooms == None %}
         <div><p>There are no rooms.</p></div>
     {% else %}
@@ -16,7 +16,7 @@
                 <li>
 
                     <a> {{ rooms[room][0] }}'s Game</a>
-                    <a href="/join/{{ room }}"> JOIN </a>
+                    <a href="/join/{{ room }}" style="color:rebeccapurple; text-shadow:2px 2px"> JOIN </a>
 
                 </li>
             {% endif %}
@@ -24,4 +24,7 @@
     {% endif %}
 
 </ul>
+<div>
+    <a href="/">Back to menu</a>
+</div>
 {% endblock %}

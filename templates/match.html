@@ -1,20 +1,37 @@
 {%  extends "base.html" %}
 
 {% block title %} Match - QuadTers {% endblock %}
+
+{% block header %}
+    <h1>{{ turn.name }} Turn!</h1>
+    <meta http-equiv="refresh" content="10" />
+{% endblock %}
+
 {% block content %}
-    <meta http-equiv="refresh" content="5;URL=/match" />
     <div id="ui">
-
-        {# Board #}
-
+    {# Board #}
     <table id="gameboard">
         {% for y in range(8) %}
         <tr>
             {% for x in range(10) %}
-            <td>
+            <td
+            {% if game.board.gameboard[y][x][0].state == 'destroyed' %}
+                class="destroyed"
+            {% elif game.board.gameboard[y][x][0].height == 0 %}
+                class="normal"
+            {% elif game.board.gameboard[y][x][0].height == -1 %}
+                class="neg"
+            {% elif game.board.gameboard[y][x][0].height == 1 %}
+                class="pos"
+            {% elif game.board.gameboard[y][x][0].height == -2 %}
+                class="negneg"
+            {% elif game.board.gameboard[y][x][0].height == 2 %}
+                class="pospos"
+            {% endif %}
+            >
 
                 {# Tile info #}
-                {{game.board.gameboard[y][x][0]}}
+                {# {{game.board.gameboard[y][x][0]}} #}
                 {# Powerup info #}
 				{% if game.board.gameboard[y][x][2] %}
                     <div class="powerup" style="color:orange" ></div>
@@ -25,7 +42,7 @@
                     <input type="hidden" name='action' value='move'>
                     <input type="hidden" name='y' value={{ y }}>
                     <input type="hidden" name='x' value={{ x }}>
-                    <input type="submit" value="MOVE" >
+                    <input class="movement" type="submit" value="➥" >
                     </form>
                 {% endif %}
 
@@ -50,17 +67,17 @@
 
                         {% if game.board.gameboard[y][x][1] == selected %}
                             <input type="hidden" name='action' value='deselect'>
-                            <input class="pawn" style="background-color:green" type="submit" value="+">
+                            <input class="pawn" style="animation:idle 2s infinite" type="submit" value="">
                         {% elif game.board.gameboard[y][x][1].owner == turn %}
                             <input type="hidden" name='action' value='select'>
-                            <input class="pawn"  type="submit" value="+" >
+                            <input class="pawn"style="cursor:grab;"  type="submit" value="" >
                         {% else %}
                             <input class="pawn" type="button">
                         {% endif %}
                     </form>
 
                 {% endif %}
-				
+
             </td>
             {% endfor %}
         </tr>
@@ -69,11 +86,11 @@
 
     {# Powerup #}
     <div id="side-panel" >
-        <div id="collected_powers">
+        <div id="powers">
         {% if selected %}
             <ul>
             {% for power in selected.collected_powerups %}
-                <li>
+                <li id="collected_powers">
                     <dl>
                         <div>
                             <dt><a>{{ selected.powerups.description_dict[ power ][0] }} : {{ selected.collected_powerups.get(power) }} </a></dt>
@@ -83,7 +100,7 @@
                                 <input type="submit" value="ACTIVATE" >
                             </form>
                         </div>
-                        <dd>{{ selected.powerups.description_dict[ power ][1] }}</dd>
+                        <dd class="desc" ><a>{{ selected.powerups.description_dict[ power ][1] }}</a></dd>
                     </dl>
 
                 </li>
@@ -99,8 +116,6 @@
 
 {% block footer %}
     {# DEBUG Info #}
-    <a> {{ movement }} | {{ game.selected }} | {{ turn.name }}</a>
+    <p><a> {{ movement }} | {{ game.selected }}</a></p>
+    <p><a>Recreated by Filip Duber</a></p>
 {% endblock %}
-
-
-

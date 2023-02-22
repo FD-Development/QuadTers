@@ -3,7 +3,7 @@
 {% block title %} Join room - QuadTers {% endblock %}
 
 {% block content %}
-    <form method="post">
+    <form class="inputs" method="post">
         <label for="name1">Player</label>
         <input id="name1" name="player" placeholder="name" value="">
         <input type="hidden" name="uuid"  value="{{ game_uuid }}">
@@ -11,6 +11,6 @@
     </form>
 
     <div>
-        <a href="/">Back to menu</a>
+        <a href="/rooms">Back to rooms</a>
     </div>
 {% endblock %}

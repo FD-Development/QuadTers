@@ -1,6 +1,49 @@
+html{
+    background-color: cornsilk;
+}
+body{
+    display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+html a {
+    text-decoration: none;
+    color:black;
+    font-family: nulshock, Arial;
+}
+
+html input {
+    text-decoration: none;
+    color:black;
+    font-family: Consolas, Arial;
+}
+
+html label {
+    text-decoration: none;
+    color:black;
+    font-family: misa, Arial;
+}
+
+html h1 {
+    font-family: misa, Arial;
+    font-size: 50px;
+    margin:20px 0;
+    margin-bottom: 0px;
+}
+
+html dd a{
+    font-family: Consolas,Arial;
+}
+
+#setup{
+
+}
 #content{
     display: flex;
     flex-direction: column;
+    padding: 15px 50px 70vh 50px;
 }
 
 #content #ui{
@@ -17,12 +60,12 @@
 }
 
 #gameboard tr td{
-    border:black 3px groove;
     width: 90px;
     height: 90px;
     display: flex;
     flex-direction: column;
-    align-items: center
+    justify-content: center;
+    align-items: center;
 
 }
 #gameboard tr td a{
@@ -31,7 +74,6 @@
 
 #gameboard form{
     display: flex;
-    flex-direction: column;
     align-items: center
 }
 #player0 .pawn{
@@ -42,16 +84,17 @@
 }
 .pawn{
     border-width: 18px;
-  border-radius: 45px;
-  padding: 6px;
-  border-style: outset;
-  width: 60px;
-  height: 60px;
-  padding: 3px;
+    border-radius: 45px;
+    border-style: outset;
+    width: 60px;
+    height: 60px;
+    padding: 3px;
 }
 
 .has_powerup input{
-    outline:3px dotted black
+    outline-width:3px;
+    outline-style:dotted;
+    outline-color:black;
 }
 
 .powerup{
@@ -72,37 +115,70 @@
     color:blue;
 }
 
-#side-panel{
-    display: flex;
-    width: auto;
-    height: auto;
-    flex-direction: column;
+#powers ul{
+    width: 300px;
 }
 
-#collected_powers ul li {
+#powers ul li {
     text-decoration: none;
     margin: 1px ;
     padding: 1px ;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex-shrink: 0;
 }
 
 #collected_powers dl{
     display: flex;
     flex-direction: column;
+    border-style: ridge;
+    border-width: 10px;
+    border-color: #D0DFDF;
+    padding: 7px;
 }
 
 #collected_powers dl div{
     display: flex;
     flex-direction: row;
+    width: 300px;
+}
+.desc{
+    display:none;
+}
+
+div:hover + .desc{
+    display: block;
 }
 
 #collected_powers dl dt{
-    width: 150px;
+    width: 100%;
 }
 
 #collected_powers input{
-    margin: 0px 5px;
+    margin: 0 5px;
+}
+
+.inputs{
+    margin:20px;
+    padding:10px;
+}
+.movement{
+    background: none;
+    scale: 4;
+    color: #7e33bb;
+    border-style: none;
+    cursor:alias;
+}
+
+@keyframes idle {
+    to {background-color: green}
+}
+
+@font-face {
+font-family: "nulshock";
+src: url("/static/font/nulshock bd.otf") format("opentype");
+}
+@font-face {
+font-family: "misa";
+src: url("/static/font/13_Misa.TTF");
 }

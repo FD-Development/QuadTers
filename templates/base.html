@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="pl">
     <head>
-        {% block head %}
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="/static/style.css" />
-        {% endblock %}
+        <link rel="stylesheet" href="/static/tile.css" />
+        <link rel="script" href="/static/script.js" />
+
     </head>
+    <header>
+    {% block header %}
+    {% endblock %}
+    </header>
     <body>
         <div id="content">{% block content %}{% endblock %}</div>
         <div id="footer">

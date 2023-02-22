@@ -1,0 +1,47 @@
+.pospos{
+    background-color: #e6f5f5;
+    border-top: 5px gray outset;
+    border-bottom:5px  darkgray outset;
+    border-left:5px gray outset;
+    border-right:5px darkgray outset;
+}
+
+.pos{
+    background-color: #D0DFDF;
+    border-top: 5px gray outset;
+    border-bottom:5px  darkgray outset;
+    border-left:5px gray outset;
+    border-right:5px darkgray outset;
+}
+
+.normal{
+    background-color: whitesmoke;
+    border:black 5px groove;
+}
+
+.neg{
+    background-color: #858786;
+    border-top: 5px darkgray inset;
+    border-bottom: 5px gray inset;
+    border-left: 5px gray inset;
+    border-right: 5px darkgray inset;
+
+}
+
+.negneg{
+    background-color: #686f6f;
+    border-top: 5px darkgray inset;
+    border-bottom: 5px gray inset;
+    border-left: 5px gray inset;
+    border-right: 5px darkgray inset;
+}
+
+.destroyed{
+    background-color: black;
+    border-top: 5px yellow dashed;
+    border-bottom: 5px yellow dashed;
+    border-left: 5px yellow dashed;
+    border-right: 5px yellow dashed;
+
+
+}

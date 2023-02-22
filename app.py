@@ -42,13 +42,15 @@ def game():
     action = request.form.get('action')
     pos=[request.form.get('y', type=int ),request.form.get('x', type=int)]  #Note. position will always be (y,x)
 
-    if game.victory_check() : return redirect('/winner')
+    if game.victory_check() : return render_template('winner.html',victor=game.current.name)
     if action == 'select' :
         #Prevents form going to previous page and selecting piece
         if pos and game.board.gameboard[pos[0]][pos[1]][1].owner == game.current:
             return render_template('game.html', game=game, turn=game.current, movement=game.select(pos), selected=game.board.gameboard[pos[0]][pos[1]][1])
     if game.selected: #if pawn is selected it allows for other actions
-        if action == 'move' : game.move(pos) #next turn | deselects pawn
+        if action == 'move':
+            game.move(pos)
+            return redirect('/game')  # next turn | deselects pawn
         elif action == 'powerup' : game.activate_power(request.form.get('powerup'))
         elif action == 'deselect' : game.deselect()
     return render_template('game.html', game=game, turn=game.current)
@@ -69,15 +71,10 @@ def online_setup():
         return new_online_game(players)
     return render_template('online_setup.html')
 
-def new_online_game(players):
+def new_online_game(player):
     session['game_uuid'] = str(uuid.uuid4()) #room/game session
-
-    print(session['game_uuid'])
-
-    online_games[session['game_uuid']] = players
-
-    print(online_games[session['game_uuid']])
-
+    online_games[session['game_uuid']] = player
+    session['playername'] = player[0]
     return redirect('/waitroom/'+ session['game_uuid'])
 
 @app.route('/join/<uuid>', methods=['GET','POST'])
@@ -98,6 +95,7 @@ def join(uuid):
 def join_online_game(player,game_uuid):
     online_games[game_uuid].append(player) #Joining game
     session['game_uuid'] = game_uuid #Saving game session for the joined player
+    session['playername'] = player
     print(online_games[game_uuid])
     return redirect('/waitroom/'+game_uuid)
 
@@ -114,32 +112,37 @@ def waitroom(uuid):
 @app.route('/start_match/<uuid>')
 def start(uuid):
     if check(): return redirect('/')
+    if type(online_games[uuid]) == Game : return redirect('/match')
     players = online_games[uuid].copy()
     online_games[uuid] = Game(players[0],players[1])
     return redirect('/match')
 
 @app.route('/match', methods=['GET','POST'])
 def match():
+
     if check() or session['game_uuid'] not in online_games  : return redirect('/')
     #Conversion to shorter variable names
+    player = session['playername'] #player that refreshes the board
     match = online_games[session['game_uuid']]
     action = request.form.get('action')
     pos=[request.form.get('y', type=int ),request.form.get('x', type=int)]  #Note. position will always be (y,x)
 
-    if match.victory_check() : return redirect('/winner')
-    if action == 'select' :
-        #Prevents form going to previous page and selecting piece
-        if pos and match.board.gameboard[pos[0]][pos[1]][1].owner == match.current:
-            return render_template('match.html', game=match, turn=match.current, movement=match.select(pos), selected=match.board.gameboard[pos[0]][pos[1]][1])
-    if match.selected: #if pawn is selected it allows for other actions
-        if action == 'move' : match.move(pos) #next turn | deselects pawn
-        elif action == 'powerup' : match.activate_power(request.form.get('powerup'))
-        elif action == 'deselect' : match.deselect()
-    return render_template('match.html', game=match, turn=match.current)
-@app.route('/winner')
-def winner():
-    if check(): return redirect('/')
-    return render_template('winner.html', victor=games[session['key']].current.name)
+    if match.victory_check() : return render_template('winner.html',victor=match.current.name)
+    print(match.current.name)
+    print(player)
+    if player == match.current.name :
+        if action == 'select' :
+            #Prevents form going to previous page and selecting piece
+            if pos and match.board.gameboard[pos[0]][pos[1]][1].owner == match.current:
+                return render_template('match.html', game=match, turn=match.current, movement=match.select(pos), selected=match.board.gameboard[pos[0]][pos[1]][1])
+        if match.selected: #if pawn is selected it allows for other actions
+            if action == 'move' :
+                match.move(pos)
+                return redirect('/match')#next turn | deselects pawn
+            elif action == 'powerup' : match.activate_power(request.form.get('powerup'))
+            elif action == 'deselect' : match.deselect()
+        return render_template('match.html', game=match, turn=match.current)
+    return render_template('match_view.html', game=match, turn=match.current)
 
 if __name__ == '__main__':
     app.run(host="wierzba.wzks.uj.edu.pl", port=5105, debug=True)
